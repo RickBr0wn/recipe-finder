@@ -1,103 +1,118 @@
-import Image from "next/image";
+'use client'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+
+interface Recipe {
+  id: number
+  title: string
+  image: string
+}
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [query, setQuery] = useState('')
+  const [recipes, setRecipes] = useState<Recipe[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  useEffect(() => {
+    if (!query) return
+
+    const timer = setTimeout(async () => {
+      setLoading(true)
+      setError('')
+      try {
+        const res = await fetch(`/api/search?q=${query}`)
+        const data = await res.json()
+        if (data.results) setRecipes(data.results)
+        else setRecipes([])
+      } catch {
+        setError('Failed to fetch recipes')
+      } finally {
+        setLoading(false)
+      }
+    }, 300) // debounce
+
+    return () => clearTimeout(timer)
+  }, [query])
+
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 p-6 sm:p-12">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <header className="text-center mb-12">
+          <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 drop-shadow-sm">
+            🍽️ Recipe <span className="text-blue-600">Finder</span>
+          </h1>
+          <p className="mt-4 text-lg text-gray-500">
+            Discover recipes by ingredients, cravings, or cuisine.
+          </p>
+        </header>
+
+        {/* Search Bar */}
+        <div className="flex justify-center mb-12">
+          <div className="relative w-full max-w-2xl">
+            <input
+              type="text"
+              placeholder="Search delicious recipes..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="w-full px-6 py-4 pl-12 rounded-2xl border border-gray-200 shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-200 text-lg bg-white/80 backdrop-blur transition"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <svg
+              className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+            </svg>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+
+        {/* States */}
+        {loading && <p className="text-center text-blue-500 font-medium">Loading recipes...</p>}
+        {error && <p className="text-center text-red-500 font-medium">{error}</p>}
+
+        {/* Recipes Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          {recipes.map((recipe) => (
+            <Link
+              key={recipe.id}
+              href={`/recipe/${recipe.id}`}
+              className="group rounded-3xl bg-white/80 backdrop-blur border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col"
+            >
+              <div className="relative w-full h-56 overflow-hidden">
+                <img
+                  src={recipe.image}
+                  alt={recipe.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition"></div>
+                <span className="absolute top-3 right-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold text-blue-600 shadow">
+                  #{recipe.id}
+                </span>
+              </div>
+              <div className="flex-1 p-6 flex flex-col justify-between">
+                <h2 className="font-bold text-xl text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2">
+                  {recipe.title}
+                </h2>
+                <button className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition">
+                  View Recipe →
+                </button>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Empty state */}
+        {(!loading && recipes.length === 0 && query) && (
+          <p className="text-center text-gray-400 mt-16 text-lg">
+            No recipes found. Try another search!
+          </p>
+        )}
+      </div>
+    </main>
+  )
+
 }
