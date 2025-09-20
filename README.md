@@ -74,7 +74,7 @@ app/
 
 ## 🛠️ Tech Stack
 
-- [Next.js 13+](https://nextjs.org/)
+- [Next.js 15.5](https://nextjs.org/)
 - [React 19](https://react.dev/)
 - [Tailwind CSS 4](https://tailwindcss.com/)
 - [Spoonacular API](https://spoonacular.com/food-api)
