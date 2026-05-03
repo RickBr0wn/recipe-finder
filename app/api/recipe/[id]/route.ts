@@ -1,26 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getRecipe } from '@/lib/spoonacular'
 
-// GET /api/recipe/:id
 export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params
-  if (!id) {
-    return NextResponse.json({ error: 'No recipe ID provided' }, { status: 400 })
-  }
-
-  const apiKey = process.env.SPOONACULAR_KEY
-  const apiUrl = `https://api.spoonacular.com/recipes/${id}/information?apiKey=${apiKey}`
+  const { id } = await params
 
   try {
-    const res = await fetch(apiUrl)
-    if (!res.ok) {
-      return NextResponse.json({ error: 'Failed to fetch recipe details' }, { status: res.status })
-    }
-    const data = await res.json()
+    const data = await getRecipe(id)
     return NextResponse.json(data)
   } catch (err) {
-    return NextResponse.json({ error: 'Failed to fetch recipe details' }, { status: 500 })
+    console.error('Recipe fetch error:', err)
+    return NextResponse.json({ error: 'Failed to fetch recipe' }, { status: 500 })
   }
 }
