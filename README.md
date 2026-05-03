@@ -1,98 +1,115 @@
-
 # Recipe Finder
 
-A modern, visually appealing recipe search app built with Next.js 15+ and Tailwind CSS. Instantly search for recipes, view beautiful details, and explore new dishes—all powered by the Spoonacular API.
+A full-featured, mobile-first recipe app. Search millions of recipes, save favourites, build a shopping list, and plan your week with a drag-and-drop meal planner — all backed by a real database and OAuth authentication.
+
+![Search results](public/screenshots/search-results.png)
 
 ---
 
-## ✨ Features
+## Features
 
-- **Live Recipe Search:** Type any ingredient or dish and get instant results.
-- **Recipe Details:** Click a recipe to view a detailed page with ingredients and instructions.
-- **API Integration:** All data is fetched live from the Spoonacular API via secure Next.js API routes.
-- **Modern UI:** Clean, responsive layouts and subtle animations using Tailwind CSS.
+- **Recipe search** with filters for diet, cuisine, meal type, and max cook time
+- **Nutrition info** — calories, protein, fat, and carbs per serving
+- **Favourites** — save recipes with an optimistic heart toggle
+- **Shopping list** — add all ingredients from any recipe in one tap, grouped by recipe with check-off
+- **Meal planner** — drag-and-drop weekly calendar (breakfast / lunch / dinner / snack)
+- **OAuth sign-in** — Google and GitHub, no passwords
+- **Dark mode** — system-aware, persisted preference
+- **Mobile-first** — bottom tab bar on small screens, full nav on desktop
 
 ---
 
-## 🚀 Getting Started
+## Screenshots
 
-### 1. Clone the Repository
+### Desktop
+
+| Light | Dark |
+|---|---|
+| ![Home](public/screenshots/home.png) | ![Home dark](public/screenshots/home-dark.png) |
+| ![Search results](public/screenshots/search-results.png) | ![Search results dark](public/screenshots/search-results-dark.png) |
+| ![Recipe detail](public/screenshots/recipe-detail.png) | ![Recipe detail dark](public/screenshots/recipe-detail-dark.png) |
+
+### Mobile
+
+| Light | Dark |
+|---|---|
+| ![Mobile search](public/screenshots/mobile-search.png) | ![Mobile search dark](public/screenshots/mobile-search-dark.png) |
+
+### Sign in
+
+![Sign in](public/screenshots/sign-in.png)
+
+---
+
+## Tech Stack
+
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 16 (App Router, Turbopack) |
+| Auth | Auth.js v5 — Google + GitHub OAuth |
+| Database | Neon Postgres + Prisma 6 |
+| UI | shadcn/ui (Base UI) + Tailwind CSS 4 |
+| Drag and drop | @dnd-kit/core + @dnd-kit/sortable |
+| Recipes API | Spoonacular |
+| Testing | Vitest + React Testing Library + Playwright |
+
+---
+
+## Getting Started
+
+### 1. Clone and install
 
 ```bash
-git clone https://github.com/your-username/recipe-finder.git
+git clone https://github.com/RickBr0wn/recipe-finder.git
 cd recipe-finder
-```
-
-### 2. Install Dependencies
-
-```bash
-pnpm install
-# or
 npm install
-# or
-yarn install
 ```
 
-### 3. Set Up Environment Variables
-
-Create a `.env` file in the root directory and add your Spoonacular API key:
-
-```
-SPOONACULAR_KEY=your_spoonacular_api_key_here
-```
-
-You can get a free API key from [spoonacular.com/food-api](https://spoonacular.com/food-api).
-
-### 4. Run the Development Server
+### 2. Set up environment variables
 
 ```bash
-pnpm dev
-# or
+cp .env.example .env
+```
+
+Fill in each value:
+
+| Variable | Where to get it |
+|---|---|
+| `DATABASE_URL` | [neon.tech](https://neon.tech) — create a Postgres database |
+| `AUTH_SECRET` | Run `npx auth secret` |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | [console.cloud.google.com](https://console.cloud.google.com) |
+| `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` | [github.com/settings/applications/new](https://github.com/settings/applications/new) |
+| `SPOONACULAR_KEY` | [spoonacular.com/food-api](https://spoonacular.com/food-api) |
+
+### 3. Push the database schema
+
+```bash
+npx prisma db push
+```
+
+### 4. Run the dev server
+
+```bash
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the app.
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## 🗂️ Project Structure
+## Scripts
 
-```
-app/
-	api/
-		recipe/[id]/route.ts      # API route for recipe details
-		search/route.ts           # API route for recipe search
-	recipe/[id]/page.tsx        # Dynamic recipe details page
-	page.tsx                    # Home/search page
-	layout.tsx                  # App layout
-	globals.css                 # Global styles (Tailwind)
+```bash
+npm run dev          # Dev server (Turbopack)
+npm run build        # Production build
+npm run test         # Vitest unit tests
+npm run test:e2e     # Playwright E2E tests (requires dev server)
+npm run lint         # ESLint
+npx prisma studio    # Browse the database
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## License
 
-- [Next.js 15.5](https://nextjs.org/)
-- [React 19](https://react.dev/)
-- [Tailwind CSS 4](https://tailwindcss.com/)
-- [Spoonacular API](https://spoonacular.com/food-api)
-
----
-
-## 📦 Deployment
-
-This app is ready to deploy on [Vercel](https://vercel.com/) or any Node.js hosting platform. Make sure to set your `SPOONACULAR_KEY` environment variable in your deployment settings.
-
----
-
-## 🙋‍♂️ Author
-
-Built by Richard Brown as a portfolio starter project. Feel free to fork, adapt, or reach out for collaboration!
-
----
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
+MIT
