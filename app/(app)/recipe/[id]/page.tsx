@@ -169,10 +169,21 @@ export default async function RecipeDetailPage({ params }: Props) {
                 <Link
                   key={s.id}
                   href={`/recipe/${s.id}`}
-                  className="rounded-xl border border-border/60 bg-card p-3 hover:bg-secondary transition-colors duration-[140ms]"
+                  className="group rounded-xl border border-border/60 bg-card overflow-hidden hover:bg-secondary transition-colors duration-[140ms]"
                 >
-                  <p className="font-serif text-sm font-medium text-foreground line-clamp-2 leading-snug">{s.title}</p>
-                  <p className="text-xs text-muted-foreground font-mono mt-1.5">{s.readyInMinutes} min</p>
+                  <div className="relative w-full h-32 overflow-hidden">
+                    <Image
+                      src={`https://spoonacular.com/recipeImages/${s.id}-312x231.${s.imageType}`}
+                      alt={s.title}
+                      fill
+                      sizes="(max-width: 640px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-[520ms] ease-out group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-3">
+                    <p className="font-serif text-sm font-medium text-foreground line-clamp-2 leading-snug">{s.title}</p>
+                    <p className="text-xs text-muted-foreground font-mono mt-1.5">{s.readyInMinutes} min</p>
+                  </div>
                 </Link>
               ))}
             </div>
