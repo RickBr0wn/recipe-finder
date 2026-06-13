@@ -94,8 +94,19 @@ export async function getRecipe(id: string): Promise<RecipeDetail> {
 }
 
 export async function getSimilarRecipes(id: string): Promise<SimilarRecipe[]> {
-  const url = `${BASE_URL}/recipes/${id}/similar?number=6&apiKey=${apiKey()}`
+  const url = `${BASE_URL}/recipes/${id}/similar?number=9&apiKey=${apiKey()}`
   const res = await fetch(url, { next: { revalidate: 3600 } })
   if (!res.ok) return []
   return res.json()
+}
+
+export async function getRecipesDietInfo(
+  ids: number[]
+): Promise<{ id: number; diets: string[] }[]> {
+  if (ids.length === 0) return []
+  const url = `${BASE_URL}/recipes/informationBulk?ids=${ids.join(',')}&includeNutrition=false&apiKey=${apiKey()}`
+  const res = await fetch(url, { next: { revalidate: 3600 } })
+  if (!res.ok) return []
+  const data: { id: number; diets: string[] }[] = await res.json()
+  return data.map(({ id, diets }) => ({ id, diets }))
 }

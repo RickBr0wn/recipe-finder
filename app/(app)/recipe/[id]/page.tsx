@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { getRecipe, getSimilarRecipes } from '@/lib/spoonacular'
+import { getRecipe, getSimilarRecipes, getRecipesDietInfo } from '@/lib/spoonacular'
 import { ArrowLeft, Clock, Users } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -37,7 +37,7 @@ export default async function RecipeDetailPage({ params }: Props) {
     )
   }
 
-  const [similar, isFavourited] = await Promise.all([
+  const [rawSimilar, isFavourited] = await Promise.all([
     getSimilarRecipes(id),
     session?.user?.id
       ? prisma.favourite.findUnique({
@@ -46,6 +46,21 @@ export default async function RecipeDetailPage({ params }: Props) {
         }).then(Boolean)
       : false,
   ])
+
+  // Filter similar recipes to match the current recipe's dietary tags.
+  // Fetch diet info in bulk (one request) then exclude recipes missing any of the current recipe's diets.
+  let similar = rawSimilar
+  if (data.diets.length > 0 && rawSimilar.length > 0) {
+    const dietInfo = await getRecipesDietInfo(rawSimilar.map((s) => s.id))
+    const dietMap = new Map(dietInfo.map((d) => [d.id, d.diets]))
+    similar = rawSimilar.filter((s) => {
+      const recipeDiets = dietMap.get(s.id) ?? []
+      return data.diets.every((d) => recipeDiets.includes(d))
+    })
+    // Fall back to unfiltered if nothing passes (edge case)
+    if (similar.length === 0) similar = rawSimilar
+  }
+  similar = similar.slice(0, 6)
 
   const macros = data.nutrition?.nutrients?.filter((n) => MACRO_NAMES.includes(n.name)) ?? []
 
