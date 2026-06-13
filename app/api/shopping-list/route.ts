@@ -13,6 +13,11 @@ const addSchema = z.object({
   })),
 })
 
+const patchSchema = z.object({
+  id: z.string(),
+  checked: z.boolean(),
+})
+
 export async function GET() {
   const session = await auth()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -42,9 +47,11 @@ export async function PATCH(req: NextRequest) {
   const session = await auth()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { id, checked } = await req.json()
-  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
+  const body = await req.json()
+  const parsed = patchSchema.safeParse(body)
+  if (!parsed.success) return NextResponse.json({ error: 'Invalid body' }, { status: 400 })
 
+  const { id, checked } = parsed.data
   const item = await prisma.shoppingItem.updateMany({
     where: { id, userId: session.user.id },
     data: { checked },

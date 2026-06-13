@@ -46,14 +46,16 @@ export function FavouriteButton({
 
     try {
       if (prev) {
-        await fetch(`/api/favourites?recipeId=${recipeId}`, { method: 'DELETE' })
+        const res = await fetch(`/api/favourites?recipeId=${recipeId}`, { method: 'DELETE' })
+        if (!res.ok) throw new Error('Failed')
         toast.success('Removed from favourites')
       } else {
-        await fetch('/api/favourites', {
+        const res = await fetch('/api/favourites', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ recipeId, recipeTitle, recipeImage, readyInMinutes, servings, diets }),
         })
+        if (!res.ok) throw new Error('Failed')
         toast.success('Saved to favourites')
       }
     } catch {

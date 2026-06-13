@@ -87,15 +87,19 @@ export async function searchRecipes(params: {
 }
 
 export async function getRecipe(id: string): Promise<RecipeDetail> {
-  const url = `${BASE_URL}/recipes/${id}/information?includeNutrition=true&apiKey=${apiKey()}`
-  const res = await fetch(url, { next: { revalidate: 3600 } })
+  const url = new URL(`${BASE_URL}/recipes/${id}/information`)
+  url.searchParams.set('includeNutrition', 'true')
+  url.searchParams.set('apiKey', apiKey())
+  const res = await fetch(url.toString(), { next: { revalidate: 3600 } })
   if (!res.ok) throw new Error(`Spoonacular recipe error: ${res.status}`)
   return res.json()
 }
 
 export async function getSimilarRecipes(id: string): Promise<SimilarRecipe[]> {
-  const url = `${BASE_URL}/recipes/${id}/similar?number=9&apiKey=${apiKey()}`
-  const res = await fetch(url, { next: { revalidate: 3600 } })
+  const url = new URL(`${BASE_URL}/recipes/${id}/similar`)
+  url.searchParams.set('number', '9')
+  url.searchParams.set('apiKey', apiKey())
+  const res = await fetch(url.toString(), { next: { revalidate: 3600 } })
   if (!res.ok) return []
   return res.json()
 }
@@ -104,8 +108,11 @@ export async function getRecipesDietInfo(
   ids: number[]
 ): Promise<{ id: number; diets: string[] }[]> {
   if (ids.length === 0) return []
-  const url = `${BASE_URL}/recipes/informationBulk?ids=${ids.join(',')}&includeNutrition=false&apiKey=${apiKey()}`
-  const res = await fetch(url, { next: { revalidate: 3600 } })
+  const url = new URL(`${BASE_URL}/recipes/informationBulk`)
+  url.searchParams.set('ids', ids.join(','))
+  url.searchParams.set('includeNutrition', 'false')
+  url.searchParams.set('apiKey', apiKey())
+  const res = await fetch(url.toString(), { next: { revalidate: 3600 } })
   if (!res.ok) return []
   const data: { id: number; diets: string[] }[] = await res.json()
   return data.map(({ id, diets }) => ({ id, diets }))
