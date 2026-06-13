@@ -41,7 +41,7 @@ export default async function FavouritesPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {favourites.map((fav) => (
-            <div key={fav.id} className="group rounded-2xl border border-border/60 bg-card shadow-sm hover:shadow-md transition-all duration-[240ms] overflow-hidden flex flex-col hover:bg-secondary/30">
+            <div key={fav.id} className="group relative rounded-2xl border border-border/60 bg-card shadow-sm hover:shadow-md transition-all duration-[240ms] overflow-hidden flex flex-col hover:bg-secondary/30">
               {fav.recipeImage ? (
                 <Link href={`/recipe/${fav.recipeId}`} className="block relative w-full h-48 overflow-hidden">
                   <Image

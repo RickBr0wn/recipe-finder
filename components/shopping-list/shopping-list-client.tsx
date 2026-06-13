@@ -38,11 +38,15 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
 
   async function toggle(id: string, checked: boolean) {
     setItems((prev) => prev.map((i) => (i.id === id ? { ...i, checked } : i)))
-    await fetch('/api/shopping-list', {
+    const res = await fetch('/api/shopping-list', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, checked }),
     })
+    if (!res.ok) {
+      setItems((prev) => prev.map((i) => (i.id === id ? { ...i, checked: !checked } : i)))
+      toast.error('Failed to update item')
+    }
   }
 
   async function removeItem(id: string) {
@@ -69,8 +73,10 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
       })
       if (res.ok) {
         const freshRes = await fetch('/api/shopping-list')
-        const freshItems = await freshRes.json()
-        setItems(freshItems)
+        if (freshRes.ok) {
+          const freshItems = await freshRes.json()
+          if (Array.isArray(freshItems)) setItems(freshItems)
+        }
         setNewItem('')
       }
     } catch {

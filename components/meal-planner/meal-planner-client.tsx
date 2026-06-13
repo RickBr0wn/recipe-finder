@@ -75,9 +75,12 @@ export function MealPlannerClient({ initialItems, initialWeekStart }: MealPlanne
   // Fetch meal plan for current week
   useEffect(() => {
     fetch(`/api/meal-plan?week=${weekStart}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error('Failed')
+        return r.json()
+      })
       .then((data: MealPlanItem[]) => { if (Array.isArray(data)) setItems(data) })
-      .catch(() => {})
+      .catch(() => { toast.error('Failed to load meal plan') })
   }, [weekStart])
 
   function handleDragStart(event: DragStartEvent) {
@@ -115,6 +118,7 @@ export function MealPlannerClient({ initialItems, initialWeekStart }: MealPlanne
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
+      if (!res.ok) throw new Error('Failed to save')
       const saved = await res.json()
       setItems((prev) => prev.map((i) => (i.id === tempId ? saved : i)))
       toast.success(`Added to ${mealType}`)
@@ -125,9 +129,16 @@ export function MealPlannerClient({ initialItems, initialWeekStart }: MealPlanne
   }
 
   async function handleRemove(id: string) {
+    const snapshot = items.find((i) => i.id === id)
     setItems((prev) => prev.filter((i) => i.id !== id))
-    await fetch(`/api/meal-plan?id=${id}`, { method: 'DELETE' })
-    toast.success('Removed from meal plan')
+    try {
+      const res = await fetch(`/api/meal-plan?id=${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Failed')
+      toast.success('Removed from meal plan')
+    } catch {
+      if (snapshot) setItems((prev) => [...prev, snapshot])
+      toast.error('Failed to remove')
+    }
   }
 
   async function addWeekToShoppingList() {
@@ -136,7 +147,45 @@ export function MealPlannerClient({ initialItems, initialWeekStart }: MealPlanne
       toast.error('No meals planned this week')
       return
     }
-    toast.info('Shopping list feature — add ingredients from meal plan coming soon!')
+
+    const uniqueRecipes = [...new Map(weekItems.map((i) => [i.recipeId, i])).values()]
+
+    try {
+      const details = await Promise.all(
+        uniqueRecipes.map((item) =>
+          fetch(`/api/recipe/${item.recipeId}`).then((r) => r.ok ? r.json() : null)
+        )
+      )
+
+      const ingredients = details.flatMap((detail, idx) => {
+        if (!detail?.extendedIngredients) return []
+        return detail.extendedIngredients.map((ing: { name: string; amount: number; unit: string }) => ({
+          name: ing.name,
+          amount: String(ing.amount),
+          unit: ing.unit,
+          recipeId: uniqueRecipes[idx].recipeId,
+          recipeName: uniqueRecipes[idx].recipeTitle,
+        }))
+      })
+
+      if (ingredients.length === 0) {
+        toast.error('Could not load ingredients')
+        return
+      }
+
+      const res = await fetch('/api/shopping-list', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: ingredients }),
+      })
+      if (!res.ok) throw new Error('Failed')
+
+      toast.success(`Added ${ingredients.length} ingredients to your shopping list`, {
+        action: { label: 'View list', onClick: () => { window.location.href = '/shopping-list' } },
+      })
+    } catch {
+      toast.error('Failed to add ingredients to shopping list')
+    }
   }
 
   return (
