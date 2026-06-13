@@ -84,9 +84,8 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <ShoppingCart className="h-7 w-7" />
-            Shopping List
+          <h1 className="font-serif font-medium text-3xl text-foreground tracking-tight">
+            Shopping list
           </h1>
           <p className="text-muted-foreground mt-1">
             {uncheckedCount} item{uncheckedCount !== 1 ? 's' : ''} remaining
@@ -128,7 +127,7 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
           {Object.entries(grouped).map(([group, groupItems]) => (
             <div key={group}>
               {group !== 'Other' && (
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                <p className="text-xs font-sans font-semibold uppercase tracking-[0.08em] text-muted-foreground mb-2">
                   {group}
                 </p>
               )}

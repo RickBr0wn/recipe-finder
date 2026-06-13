@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
-import { Search } from 'lucide-react'
+import { Search, ChefHat } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { RecipeCard } from '@/components/recipe/recipe-card'
 import { RecipeGridSkeleton } from '@/components/recipe/recipe-card-skeleton'
@@ -61,23 +61,25 @@ export default function HomePage() {
   }, [query, filters, doSearch])
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-5 py-10">
       <div className="text-center mb-10">
-        <h1 className="text-4xl font-extrabold tracking-tight mb-3">Find your next recipe</h1>
+        <h1 className="font-serif font-medium text-4xl sm:text-5xl text-foreground tracking-tight mb-3 leading-tight">
+          Find your next recipe
+        </h1>
         <p className="text-muted-foreground text-lg">
-          Search by ingredient, craving, or cuisine — then save, plan, and shop.
+          Search by ingredient, craving, or cuisine. Then save, plan, and shop.
         </p>
       </div>
 
       <div className="space-y-3 mb-8">
         <div className="relative max-w-2xl mx-auto">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
           <Input
             type="text"
             placeholder="Search for pasta, tacos, salad..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="pl-10 h-11 text-base rounded-xl"
+            className="pl-10 h-11 text-base rounded-xl bg-muted border-border/60 focus-visible:border-primary/60"
           />
         </div>
         <div className="flex justify-center">
@@ -111,10 +113,10 @@ export default function HomePage() {
       )}
 
       {!searched && !loading && (
-        <div className="text-center mt-20 text-muted-foreground space-y-2">
-          <div className="text-5xl">🍽️</div>
-          <p className="text-lg font-medium">Start typing to discover recipes</p>
-          <p className="text-sm">Use filters to narrow results by diet, cuisine, or time</p>
+        <div className="text-center mt-20 space-y-3">
+          <ChefHat className="h-10 w-10 text-muted-foreground/40 mx-auto" strokeWidth={1} />
+          <p className="text-foreground text-base font-medium">Start typing to discover recipes</p>
+          <p className="text-muted-foreground text-sm">Use filters to narrow results by diet, cuisine, or time.</p>
         </div>
       )}
     </div>

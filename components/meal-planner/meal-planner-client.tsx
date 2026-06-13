@@ -144,7 +144,7 @@ export function MealPlannerClient({ initialItems, initialWeekStart }: MealPlanne
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
-            <h1 className="text-3xl font-bold">Meal Planner</h1>
+            <h1 className="font-serif font-medium text-3xl text-foreground tracking-tight">Meal planner</h1>
             <p className="text-muted-foreground text-sm mt-0.5">{formatWeekLabel(weekStart)}</p>
           </div>
           <div className="flex items-center gap-2">

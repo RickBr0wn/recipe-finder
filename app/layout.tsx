@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist } from 'next/font/google'
+import { Newsreader, Hanken_Grotesk, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 import { cn } from '@/lib/utils'
 import { SessionProvider } from 'next-auth/react'
@@ -7,7 +7,27 @@ import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@/components/ui/sonner'
 import { auth } from '@/lib/auth'
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
+const newsreader = Newsreader({
+  subsets: ['latin'],
+  variable: '--font-serif',
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+})
+
+const hankenGrotesk = Hanken_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+})
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  weight: ['400', '500'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Recipe Finder',
@@ -23,11 +43,19 @@ export default async function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn('font-sans', geist.variable)}
+      className={cn(
+        newsreader.variable,
+        hankenGrotesk.variable,
+        ibmPlexMono.variable
+      )}
     >
-      <body className={cn(geist.variable, 'antialiased')}>
+      <body className={cn(hankenGrotesk.variable, 'antialiased font-sans')}>
         <SessionProvider session={session}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            disableTransitionOnChange
+          >
             {children}
             <Toaster richColors position="top-right" />
           </ThemeProvider>

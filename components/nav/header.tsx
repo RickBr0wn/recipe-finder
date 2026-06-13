@@ -3,9 +3,8 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
-import { useTheme } from 'next-themes'
-import { Sun, Moon, LogOut } from 'lucide-react'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { ChefHat, LogOut } from 'lucide-react'
+import { buttonVariants } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -19,33 +18,34 @@ import { cn } from '@/lib/utils'
 const NAV_LINKS = [
   { href: '/', label: 'Search' },
   { href: '/favourites', label: 'Favourites' },
-  { href: '/shopping-list', label: 'Shopping List' },
-  { href: '/meal-planner', label: 'Meal Planner' },
+  { href: '/shopping-list', label: 'Shopping list' },
+  { href: '/meal-planner', label: 'Meal planner' },
 ]
 
 export default function Header() {
   const pathname = usePathname()
   const { data: session } = useSession()
-  const { theme, setTheme } = useTheme()
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
-      <div className="max-w-7xl mx-auto px-4 h-14 flex items-center gap-4">
-        <Link href="/" className="flex items-center gap-2 font-bold text-lg shrink-0">
-          <span className="text-2xl">🍽️</span>
-          <span className="hidden sm:inline">Recipe Finder</span>
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
+      <div className="max-w-6xl mx-auto px-5 h-14 flex items-center gap-4">
+        <Link href="/" className="flex items-center gap-2 shrink-0">
+          <ChefHat className="h-5 w-5 text-primary" strokeWidth={2} />
+          <span className="font-serif font-medium text-base text-foreground hidden sm:inline tracking-tight">
+            Recipe Finder
+          </span>
         </Link>
 
-        <nav className="hidden sm:flex items-center gap-1 flex-1">
+        <nav className="hidden sm:flex items-center gap-0.5 flex-1">
           {NAV_LINKS.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
               className={cn(
-                'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
+                'px-3 py-1.5 rounded-md text-sm transition-colors duration-[140ms]',
                 pathname === href
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                  ? 'text-primary font-medium'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
               )}
             >
               {label}
@@ -54,38 +54,28 @@ export default function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            aria-label="Toggle theme"
-          >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          </Button>
-
           {session ? (
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center rounded-full outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-ring">
+              <DropdownMenuTrigger className="flex items-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                 <Avatar className="h-8 w-8">
                   <AvatarImage
                     src={session.user?.image ?? undefined}
                     alt={session.user?.name ?? 'User'}
                   />
-                  <AvatarFallback>
+                  <AvatarFallback className="bg-secondary text-foreground text-xs font-medium">
                     {session.user?.name?.[0]?.toUpperCase() ?? 'U'}
                   </AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <div className="px-2 py-1.5 text-sm">
-                  <p className="font-medium">{session.user?.name}</p>
+                  <p className="font-medium text-foreground">{session.user?.name}</p>
                   <p className="text-muted-foreground text-xs">{session.user?.email}</p>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => signOut({ callbackUrl: '/' })}
-                  className="text-destructive"
+                  className="text-destructive focus:text-destructive"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign out
