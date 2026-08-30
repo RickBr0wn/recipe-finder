@@ -72,7 +72,7 @@ export function FavouriteButton({
       disabled={loading}
       aria-label={favourited ? 'Remove from favourites' : 'Save to favourites'}
       className={cn(
-        'flex items-center justify-center h-8 w-8 rounded-full bg-background/80 backdrop-blur border shadow-sm transition-colors hover:bg-background',
+        'flex items-center justify-center h-8 w-8 rounded-full bg-[var(--glass-bg-strong)] backdrop-blur-md backdrop-saturate-150 border border-[var(--glass-border)] shadow-[var(--shadow-sm)] transition-colors hover:bg-[var(--surface-white)]',
         loading && 'opacity-50 cursor-not-allowed',
         className
       )}

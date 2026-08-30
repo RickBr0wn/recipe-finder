@@ -22,7 +22,7 @@ export function ShareButton({ title }: ShareButtonProps) {
     <button
       onClick={share}
       aria-label="Share recipe"
-      className="flex items-center justify-center h-8 w-8 rounded-full bg-background/80 backdrop-blur border shadow-sm hover:bg-background transition-colors"
+      className="flex items-center justify-center h-8 w-8 rounded-full bg-[var(--glass-bg-strong)] backdrop-blur-md backdrop-saturate-150 border border-[var(--glass-border)] shadow-[var(--shadow-sm)] hover:bg-[var(--surface-white)] transition-colors"
     >
       <Share2 className="h-4 w-4 text-muted-foreground" />
     </button>

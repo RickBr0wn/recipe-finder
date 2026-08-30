@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Newsreader, Hanken_Grotesk, IBM_Plex_Mono } from 'next/font/google'
+import { Manrope } from 'next/font/google'
 import './globals.css'
 import { cn } from '@/lib/utils'
 import { SessionProvider } from 'next-auth/react'
@@ -7,25 +7,10 @@ import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@/components/ui/sonner'
 import { auth } from '@/lib/auth'
 
-const newsreader = Newsreader({
-  subsets: ['latin'],
-  variable: '--font-serif',
-  weight: ['400', '500', '600'],
-  style: ['normal', 'italic'],
-  display: 'swap',
-})
-
-const hankenGrotesk = Hanken_Grotesk({
+const manrope = Manrope({
   subsets: ['latin'],
   variable: '--font-sans',
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
-})
-
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  weight: ['400', '500'],
+  weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
 })
 
@@ -40,20 +25,13 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await auth()
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn(
-        newsreader.variable,
-        hankenGrotesk.variable,
-        ibmPlexMono.variable
-      )}
-    >
-      <body className={cn(hankenGrotesk.variable, 'antialiased font-sans')}>
+    <html lang="en" suppressHydrationWarning className={cn(manrope.variable)}>
+      <body className={cn(manrope.variable, 'antialiased font-sans')}>
         <SessionProvider session={session}>
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="light"
+            enableSystem={false}
             disableTransitionOnChange
           >
             {children}

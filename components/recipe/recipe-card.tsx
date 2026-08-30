@@ -16,7 +16,7 @@ export function RecipeCard({ recipe, isFavourited = false }: RecipeCardProps) {
   const calories = recipe.nutrition?.nutrients?.find((n) => n.name === 'Calories')
 
   return (
-    <div className="group rounded-2xl border border-border/60 bg-card shadow-sm hover:shadow-md transition-all duration-[240ms] overflow-hidden flex flex-col hover:bg-secondary/30">
+    <div className="group rounded-lg bg-card shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-all duration-[240ms] overflow-hidden flex flex-col">
       <Link href={`/recipe/${recipe.id}`} className="block relative w-full h-48 overflow-hidden">
         <Image
           src={recipe.image}
@@ -39,25 +39,25 @@ export function RecipeCard({ recipe, isFavourited = false }: RecipeCardProps) {
       </Link>
 
       <Link href={`/recipe/${recipe.id}`} className="p-4 flex-1 flex flex-col gap-2">
-        <h2 className="font-serif font-medium text-base text-foreground group-hover:text-primary transition-colors duration-[140ms] line-clamp-2 leading-snug">
+        <h2 className="font-sans font-bold text-base text-foreground group-hover:text-primary transition-colors duration-[140ms] line-clamp-2 leading-snug">
           {recipe.title}
         </h2>
 
         <div className="flex flex-wrap gap-2.5 mt-auto pt-2">
           {recipe.readyInMinutes && (
-            <span className="flex items-center gap-1 text-xs text-muted-foreground font-mono">
+            <span className="flex items-center gap-1 text-xs font-medium tabular-nums text-muted-foreground">
               <Clock className="h-3 w-3 stroke-current" strokeWidth={1.5} />
               {recipe.readyInMinutes} min
             </span>
           )}
           {recipe.servings && (
-            <span className="flex items-center gap-1 text-xs text-muted-foreground font-mono">
+            <span className="flex items-center gap-1 text-xs font-medium tabular-nums text-muted-foreground">
               <Users className="h-3 w-3 stroke-current" strokeWidth={1.5} />
               {recipe.servings}
             </span>
           )}
           {calories && (
-            <span className="text-xs text-muted-foreground font-mono">
+            <span className="text-xs font-medium tabular-nums text-muted-foreground">
               {Math.round(calories.amount)} kcal
             </span>
           )}

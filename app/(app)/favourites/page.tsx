@@ -19,7 +19,7 @@ export default async function FavouritesPage() {
   return (
     <div className="max-w-6xl mx-auto px-5 py-10">
       <div className="mb-8">
-        <h1 className="font-serif font-medium text-3xl text-foreground tracking-tight">
+        <h1 className="font-sans font-extrabold text-3xl text-foreground tracking-tight">
           Favourites
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
@@ -41,7 +41,7 @@ export default async function FavouritesPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {favourites.map((fav) => (
-            <div key={fav.id} className="group relative rounded-2xl border border-border/60 bg-card shadow-sm hover:shadow-md transition-all duration-[240ms] overflow-hidden flex flex-col hover:bg-secondary/30">
+            <div key={fav.id} className="group relative rounded-lg bg-card shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-all duration-[240ms] overflow-hidden flex flex-col">
               {fav.recipeImage ? (
                 <Link href={`/recipe/${fav.recipeId}`} className="block relative w-full h-48 overflow-hidden">
                   <Image
@@ -78,10 +78,10 @@ export default async function FavouritesPage() {
               )}
 
               <Link href={`/recipe/${fav.recipeId}`} className="p-4 flex-1 flex flex-col gap-2">
-                <h2 className="font-serif font-medium text-base text-foreground group-hover:text-primary transition-colors duration-[140ms] line-clamp-2 leading-snug">
+                <h2 className="font-sans font-bold text-base text-foreground group-hover:text-primary transition-colors duration-[140ms] line-clamp-2 leading-snug">
                   {fav.recipeTitle}
                 </h2>
-                <div className="flex flex-wrap gap-2.5 text-xs text-muted-foreground font-mono mt-auto pt-1">
+                <div className="flex flex-wrap gap-2.5 text-xs font-medium tabular-nums text-muted-foreground mt-auto pt-1">
                   {fav.readyInMinutes && (
                     <span className="flex items-center gap-1">
                       <Clock className="h-3 w-3" strokeWidth={1.5} />

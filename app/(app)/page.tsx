@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
+import Image from 'next/image'
 import { Search, ChefHat } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import { RecipeCard } from '@/components/recipe/recipe-card'
 import { RecipeGridSkeleton } from '@/components/recipe/recipe-card-skeleton'
 import { FilterPanel, type Filters } from '@/components/recipe/filter-panel'
-import type { RecipeSearchResult } from '@/lib/spoonacular'
+import type { RecipeSearchResult, RandomRecipe } from '@/lib/spoonacular'
 
 export default function HomePage() {
   const { data: session } = useSession()
@@ -18,6 +20,14 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [searched, setSearched] = useState(false)
+  const [heroImages, setHeroImages] = useState<RandomRecipe[]>([])
+
+  useEffect(() => {
+    fetch('/api/random?number=3')
+      .then((r) => r.json())
+      .then((data: { recipes: RandomRecipe[] }) => setHeroImages(data.recipes ?? []))
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     if (!session?.user?.id) return
@@ -61,9 +71,9 @@ export default function HomePage() {
   }, [query, filters, doSearch])
 
   return (
-    <div className="max-w-6xl mx-auto px-5 py-10">
+    <div className="max-w-6xl mx-auto px-5 py-12">
       <div className="text-center mb-10">
-        <h1 className="font-serif font-medium text-4xl sm:text-5xl text-foreground tracking-tight mb-3 leading-tight">
+        <h1 className="font-sans font-extrabold text-4xl sm:text-5xl text-foreground tracking-tight mb-3 leading-tight">
           Find your next recipe
         </h1>
         <p className="text-muted-foreground text-lg">
@@ -71,54 +81,85 @@ export default function HomePage() {
         </p>
       </div>
 
-      <div className="space-y-3 mb-8">
-        <div className="relative max-w-2xl mx-auto">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
-          <Input
-            type="text"
-            placeholder="Search for pasta, tacos, salad..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="pl-10 h-11 text-base rounded-xl bg-muted border-border/60 focus-visible:border-primary/60"
-          />
-        </div>
-        <div className="flex justify-center">
-          <FilterPanel filters={filters} onChange={setFilters} />
+      <div className="relative">
+        {heroImages.length > 0 ? (
+          <div className="grid grid-cols-[1.3fr_1fr_1fr] gap-4 h-56 sm:h-72 rounded-3xl overflow-hidden">
+            {heroImages.map((r) => (
+              <div key={r.id} className="relative h-full w-full">
+                <Image
+                  src={r.image}
+                  alt={r.title}
+                  fill
+                  sizes="(max-width: 640px) 33vw, 400px"
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="h-56 sm:h-72 rounded-3xl bg-muted animate-pulse" />
+        )}
+
+        <div className="relative -mt-7 sm:-mt-9 flex justify-center px-4">
+          <div className="flex items-center gap-2 w-full max-w-xl bg-[var(--glass-bg-strong)] backdrop-blur-xl backdrop-saturate-150 border border-[var(--glass-border)] rounded-full py-1.5 pl-5 pr-1.5 shadow-[var(--shadow-lg)]">
+            <Search className="h-4 w-4 text-muted-foreground shrink-0" strokeWidth={1.5} />
+            <Input
+              type="text"
+              placeholder="Search for pasta, tacos, salad..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="border-0 bg-transparent shadow-none h-9 text-base focus-visible:ring-0 px-1"
+            />
+            <Button
+              size="sm"
+              className="shrink-0"
+              onClick={() => doSearch(query, filters)}
+            >
+              Search
+            </Button>
+          </div>
         </div>
       </div>
 
-      {loading && <RecipeGridSkeleton />}
+      <div className="flex justify-center mt-10 mb-2">
+        <FilterPanel filters={filters} onChange={setFilters} />
+      </div>
 
-      {!loading && error && (
-        <p className="text-center text-destructive mt-8">{error}</p>
-      )}
+      <div className="mt-6">
+        {loading && <RecipeGridSkeleton />}
 
-      {!loading && !error && recipes.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recipes.map((recipe) => (
-            <RecipeCard
-              key={recipe.id}
-              recipe={recipe}
-              isFavourited={favouriteIds.has(recipe.id)}
-            />
-          ))}
-        </div>
-      )}
+        {!loading && error && (
+          <p className="text-center text-destructive mt-8">{error}</p>
+        )}
 
-      {!loading && !error && searched && recipes.length === 0 && (
-        <div className="text-center mt-20">
-          <p className="text-muted-foreground text-lg">No recipes found for &quot;{query}&quot;</p>
-          <p className="text-muted-foreground text-sm mt-1">Try adjusting the filters or a different search.</p>
-        </div>
-      )}
+        {!loading && !error && recipes.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {recipes.map((recipe) => (
+              <RecipeCard
+                key={recipe.id}
+                recipe={recipe}
+                isFavourited={favouriteIds.has(recipe.id)}
+              />
+            ))}
+          </div>
+        )}
 
-      {!searched && !loading && (
-        <div className="text-center mt-20 space-y-3">
-          <ChefHat className="h-10 w-10 text-muted-foreground/40 mx-auto" strokeWidth={1} />
-          <p className="text-foreground text-base font-medium">Start typing to discover recipes</p>
-          <p className="text-muted-foreground text-sm">Use filters to narrow results by diet, cuisine, or time.</p>
-        </div>
-      )}
+        {!loading && !error && searched && recipes.length === 0 && (
+          <div className="text-center mt-20">
+            <p className="text-muted-foreground text-lg">No recipes found for &quot;{query}&quot;</p>
+            <p className="text-muted-foreground text-sm mt-1">Try adjusting the filters or a different search.</p>
+          </div>
+        )}
+
+        {!searched && !loading && (
+          <div className="text-center mt-16 space-y-3">
+            <ChefHat className="h-10 w-10 text-muted-foreground/40 mx-auto" strokeWidth={1} />
+            <p className="text-foreground text-base font-medium">Start typing to discover recipes</p>
+            <p className="text-muted-foreground text-sm">Use filters to narrow results by diet, cuisine, or time.</p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

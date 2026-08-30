@@ -104,6 +104,22 @@ export async function getSimilarRecipes(id: string): Promise<SimilarRecipe[]> {
   return res.json()
 }
 
+export interface RandomRecipe {
+  id: number
+  title: string
+  image: string
+}
+
+export async function getRandomRecipes(number: number): Promise<RandomRecipe[]> {
+  const url = new URL(`${BASE_URL}/recipes/random`)
+  url.searchParams.set('number', String(number))
+  url.searchParams.set('apiKey', apiKey())
+  const res = await fetch(url.toString(), { next: { revalidate: 3600 } })
+  if (!res.ok) return []
+  const data: { recipes: RandomRecipe[] } = await res.json()
+  return data.recipes ?? []
+}
+
 export async function getRecipesDietInfo(
   ids: number[]
 ): Promise<{ id: number; diets: string[] }[]> {
