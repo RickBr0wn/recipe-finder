@@ -120,7 +120,7 @@ export function FilterPanel({ filters, onChange }: FilterPanelProps) {
               </Badge>
             )}
           </SheetTrigger>
-          <SheetContent side="bottom" className="max-h-[80vh] overflow-y-auto rounded-t-2xl">
+          <SheetContent side="bottom" className="max-h-[80vh] overflow-y-auto">
             <SheetHeader>
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>

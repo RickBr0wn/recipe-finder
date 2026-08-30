@@ -90,7 +90,7 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="font-serif font-medium text-3xl text-foreground tracking-tight">
+          <h1 className="font-sans font-extrabold text-3xl text-foreground tracking-tight">
             Shopping list
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -137,7 +137,7 @@ export function ShoppingListClient({ initialItems }: ShoppingListClientProps) {
                   {group}
                 </p>
               )}
-              <div className="rounded-xl border divide-y bg-card">
+              <div className="rounded-lg bg-card shadow-[var(--shadow-sm)] divide-y divide-border">
                 {groupItems.map((item) => (
                   <div key={item.id} className="flex items-center gap-3 px-4 py-3">
                     <input

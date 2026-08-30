@@ -27,11 +27,11 @@ export default function Header() {
   const { data: session } = useSession()
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl backdrop-saturate-150">
       <div className="max-w-6xl mx-auto px-5 h-14 flex items-center gap-4">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <ChefHat className="h-5 w-5 text-primary" strokeWidth={2} />
-          <span className="font-serif font-medium text-base text-foreground hidden sm:inline tracking-tight">
+          <span className="font-sans font-extrabold text-base text-foreground hidden sm:inline tracking-tight">
             Recipe Finder
           </span>
         </Link>

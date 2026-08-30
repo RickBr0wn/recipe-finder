@@ -16,7 +16,7 @@ export default function BottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur">
+    <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-xl backdrop-saturate-150">
       <div className="grid grid-cols-4 h-16">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname === href
